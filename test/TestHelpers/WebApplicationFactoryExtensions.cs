@@ -24,7 +24,7 @@ namespace TestHelpers
                 CancellationToken cancellationToken)
             {
                 var response = await base.SendAsync(request, cancellationToken);
-                response.Version = request.Version;
+                response.Version = request.Version; // NOTE: Setting HTTP version to 2.0 for GRPC communication
 
                 return response;
             }
