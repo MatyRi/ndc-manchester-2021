@@ -26,6 +26,7 @@ namespace Frontend.Controllers
         public async Task<IActionResult> Index(CancellationToken ct)
         {
             var toppingsResponse = await _client.GetToppingsAsync(new GetToppingsRequest(), cancellationToken: ct);
+            var crustsResponse = await _client.GetCrustsAsync(new GetCrustsRequest(), cancellationToken: ct);
 
             var toppings = toppingsResponse.Toppings.Select(t => new ToppingViewModel
             {
@@ -34,11 +35,13 @@ namespace Frontend.Controllers
                 Price = Convert.ToDecimal(t.Topping.Price)
             }).ToList();
 
-            var crusts = new List<CrustViewModel>
+            var crusts = crustsResponse.Crusts.Select(t => new CrustViewModel
             {
-                new("thin9", "Thin", 9, 5m),
-                new("deep9", "Deep", 9, 6m),
-            };
+                Id = t.Crust.Id,
+                Name = t.Crust.Name,
+                Price = Convert.ToDecimal(t.Crust.Price)
+            }).ToList();
+
             var viewModel = new HomeViewModel(toppings, crusts);
             return View(viewModel);
         }

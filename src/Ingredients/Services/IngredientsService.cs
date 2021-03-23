@@ -12,11 +12,13 @@ namespace Ingredients.Services
     {
         private readonly ILogger _logger;
         private readonly IToppingData _toppingData;
+        private readonly ICrustData _crustData;
 
-        public IngredientsService(ILogger<IngredientsService> logger, IToppingData toppingData)
+        public IngredientsService(ILogger<IngredientsService> logger, IToppingData toppingData, ICrustData crustData)
         {
             _logger = logger;
             _toppingData = toppingData;
+            _crustData = crustData;
         }
 
         public override async Task<GetToppingsResponse> GetToppings(GetToppingsRequest request, ServerCallContext context)
@@ -43,6 +45,42 @@ namespace Ingredients.Services
 
                 return response;
             } 
+            catch (OperationCanceledException ex)
+            {
+                _logger.LogWarning(ex, "Operation was cancelled.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error: " + ex.Message);
+                throw;
+            }
+        }
+
+        public override async Task<GetCrustsResponse> GetCrusts(GetCrustsRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var crusts = await _crustData.GetAsync(context.CancellationToken);
+
+                var availableCrusts = crusts.Select(c => new AvailableCrust
+                {
+                    Quantity = c.StockCount,
+                    Crust = new Crust
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        Price = (double)c.Price
+                    }
+                });
+
+                var response = new GetCrustsResponse
+                {
+                    Crusts = { availableCrusts }
+                };
+
+                return response;
+            }
             catch (OperationCanceledException ex)
             {
                 _logger.LogWarning(ex, "Operation was cancelled.");

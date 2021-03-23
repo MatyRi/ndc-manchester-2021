@@ -25,6 +25,7 @@ namespace Ingredients.Tests
             builder.ConfigureServices(services =>
             {
                 services.RemoveAll<IToppingData>();
+                services.RemoveAll<ICrustData>();
 
                 var toppingEntities = new List<ToppingEntity>
                 {
@@ -36,7 +37,18 @@ namespace Ingredients.Tests
                 toppingDataSub.GetAsync(Arg.Any<CancellationToken>())
                 .Returns(Task.FromResult(toppingEntities));
 
+                var crustEntites = new List<CrustEntity>
+                {
+                    new CrustEntity("one", "Large", 10, 5, 50),
+                    new CrustEntity("two", "Small", 8, 3, 100)
+                };
+
+                var crustsDataSub = Substitute.For<ICrustData>();
+                crustsDataSub.GetAsync(Arg.Any<CancellationToken>())
+                .Returns(Task.FromResult(crustEntites));
+
                 services.AddSingleton(toppingDataSub);
+                services.AddSingleton(crustsDataSub);
 
             });
 
