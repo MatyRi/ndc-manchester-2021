@@ -13,7 +13,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Protobuf Include="Protos\ingredients.proto" GrpcServices="Client" Access="public" />
+    <Protobuf Include="Protos\ingredients.proto" GrpcServices="Client" ProtoRoot="Protos" />
+    <Protobuf Include="Protos\decimal.proto" GrpcServices="None" />
   </ItemGroup>
   
 </Project>

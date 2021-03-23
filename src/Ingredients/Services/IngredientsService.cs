@@ -34,7 +34,7 @@ namespace Ingredients.Services
                     {
                         Id = t.Id,
                         Name = t.Name,
-                        Price = (double)t.Price
+                        Price = t.Price
                     }
                 });
 
@@ -70,7 +70,7 @@ namespace Ingredients.Services
                     {
                         Id = c.Id,
                         Name = c.Name,
-                        Price = (double)c.Price
+                        Price = c.Price
                     }
                 });
 
