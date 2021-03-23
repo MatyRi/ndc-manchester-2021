@@ -3,6 +3,9 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Protos\orders.proto" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.15.6" />
     <PackageReference Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.36.0" />
     <PackageReference Include="Grpc.Tools" Version="2.36.4">
@@ -15,6 +18,7 @@
   <ItemGroup>
     <Protobuf Include="Protos\ingredients.proto" GrpcServices="Client" ProtoRoot="Protos" />
     <Protobuf Include="Protos\decimal.proto" GrpcServices="None" />
+    <Protobuf Include="Protos\orders.proto" GrpcServices="Client" />
   </ItemGroup>
   
 </Project>

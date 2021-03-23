@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Ingredients.Protos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Orders.Services;
 
 namespace Orders
 {
@@ -16,6 +15,10 @@ namespace Orders
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGrpcClient<IngredientsService.IngredientsServiceClient>((provider, options) => {
+                var config = provider.GetRequiredService<IConfiguration>();
+                options.Address = config.GetServiceUri("Ingredients", "https");
+            });
             services.AddGrpc();
         }
 
@@ -31,7 +34,7 @@ namespace Orders
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<OrdersService>();
 
                 endpoints.MapGet("/", async context =>
                 {
