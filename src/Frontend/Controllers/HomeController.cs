@@ -25,6 +25,8 @@ namespace Frontend.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index(CancellationToken ct)
         {
+            _log.LogInformation("Index");
+
             var toppingsResponse = await _client.GetToppingsAsync(new GetToppingsRequest(), cancellationToken: ct);
             var crustsResponse = await _client.GetCrustsAsync(new GetCrustsRequest(), cancellationToken: ct);
 

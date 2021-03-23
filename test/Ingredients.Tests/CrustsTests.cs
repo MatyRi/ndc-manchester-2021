@@ -8,7 +8,7 @@ namespace Ingredients.Tests
     public class CrustsTests : IClassFixture<IngredientsApplicationFactory>
     {
 
-        private IngredientsApplicationFactory _factory;
+        private readonly IngredientsApplicationFactory _factory;
 
         public CrustsTests(IngredientsApplicationFactory factory)
         {
