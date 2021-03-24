@@ -39,7 +39,6 @@ namespace Frontend
                 options.Address = config.GetServiceUri("Ingredients", "https");
             }).ConfigureChannel((provider, channel) =>
             {
-                channel.HttpClient = null;
                 channel.HttpHandler = DevelopmentModeCertificateHelper.CreateClientHandler();
 
                 //channel.HttpHandler = null;

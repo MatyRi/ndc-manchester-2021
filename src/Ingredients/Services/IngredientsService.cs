@@ -10,7 +10,7 @@ using Pizza.Data;
 
 namespace Ingredients.Services
 {
-    [Authorize()]
+    [Authorize]
     class IngredientsService : Protos.IngredientsService.IngredientsServiceBase
     {
         private readonly ILogger _logger;
