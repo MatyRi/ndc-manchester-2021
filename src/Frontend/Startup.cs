@@ -29,13 +29,13 @@ namespace Frontend
             services.AddGrpcClient<IngredientsService.IngredientsServiceClient>((provider, options) =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
-                options.Address = config.GetServiceUri("Ingredients", "https");
+                options.Address = config.GetServiceUri("Ingredients");
             });
 
             services.AddGrpcClient<OrdersService.OrdersServiceClient>((provider, options) =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
-                options.Address = config.GetServiceUri("Orders", "https");
+                options.Address = config.GetServiceUri("Orders");
             });
 
             services.AddControllersWithViews();
@@ -52,9 +52,9 @@ namespace Frontend
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
