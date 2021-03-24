@@ -5,6 +5,10 @@
 #    https://aka.ms/AA7q20u
 #
 name: pizza
+
+#extensions:
+#- name: zipkin
+
 services:
 - name: frontend
   project: src/Frontend/Frontend.csproj
@@ -15,3 +19,6 @@ services:
   project: src/Ingredients/Ingredients.csproj
 - name: orders
   project: src/Orders/Orders.csproj
+  bindings:
+    - protocol: https
+      port: 5005
