@@ -47,6 +47,7 @@ namespace Frontend
                 var config = provider.GetRequiredService<IConfiguration>();
                 options.Address = config.GetServiceUri("Orders", "https") ?? new Uri("https://localhost:5005");
             }).ConfigureChannel((provider, channel) => {
+
                 var authHelper = provider.GetRequiredService<AuthHelper>();
                 var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
                 {
