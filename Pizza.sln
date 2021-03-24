@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.PubSub", "src\Orders
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{2E1F0229-94D0-434C-ACC6-3DB6F47AA8A0}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		Frontend.Dockerfile = Frontend.Dockerfile
+		Ingredients.Dockerfile = Ingredients.Dockerfile
+		Orders.Dockerfile = Orders.Dockerfile
 		README.md = README.md
 		tye.yaml = tye.yaml
 	EndProjectSection
