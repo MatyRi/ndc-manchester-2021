@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Ingredients.Protos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Pizza.Data;
 
 namespace Ingredients.Services
 {
+    [Authorize()]
     class IngredientsService : Protos.IngredientsService.IngredientsServiceBase
     {
         private readonly ILogger _logger;
@@ -95,6 +98,9 @@ namespace Ingredients.Services
 
         public override async Task<DecrementToppingsResponse> DecrementToppings(DecrementToppingsRequest request, ServerCallContext context)
         {
+            var user = context.GetHttpContext().User;
+            _logger.LogInformation("DecrementToppings request by {User}", user.FindFirstValue(ClaimTypes.Name));
+
             var tasks = request.ToppingIds.Select(id => _toppingData.DecrementStockAsync(id, context.CancellationToken));
             await Task.WhenAll(tasks);
 
@@ -103,6 +109,9 @@ namespace Ingredients.Services
 
         public override async Task<DecrementCrustsResponse> DecrementCrusts(DecrementCrustsRequest request, ServerCallContext context)
         {
+            var user = context.GetHttpContext().User;
+            _logger.LogInformation("DecrementCrusts request by {User}", user.FindFirstValue(ClaimTypes.Name));
+
             var tasks = request.CrustIds.Select(id => _crustData.DecrementStockAsync(id, context.CancellationToken));
             await Task.WhenAll(tasks);
 

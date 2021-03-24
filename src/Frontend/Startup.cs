@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using AuthHelp;
 using Frontend.Auth;
 using Grpc.Core;
 using Ingredients.Protos;
@@ -29,10 +31,20 @@ namespace Frontend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddHttpClient("ingredients").ConfigurePrimaryHttpMessageHandler(DevelopmentModeCertificateHelper.CreateClientHandler);
+
             services.AddGrpcClient<IngredientsService.IngredientsServiceClient>((provider, options) =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 options.Address = config.GetServiceUri("Ingredients", "https");
+            }).ConfigureChannel((provider, channel) =>
+            {
+                channel.HttpClient = null;
+                channel.HttpHandler = DevelopmentModeCertificateHelper.CreateClientHandler();
+
+                //channel.HttpHandler = null;
+                //channel.HttpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("ingredients");
+                //channel.DisposeHttpClient = true;
             });
 
             services.AddHttpClient<AuthHelper>().ConfigureHttpClient((provider, client) =>
