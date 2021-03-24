@@ -1,4 +1,7 @@
-﻿using Ingredients.Protos;
+﻿using System.Security.Claims;
+using AuthHelp;
+using Ingredients.Protos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +25,26 @@ namespace Orders
             });
             services.AddGrpc();
             services.AddOrderPubSub();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateActor = false,
+                    ValidateLifetime = false,
+                    IssuerSigningKey = JwtHelper.SecurityKey
+                };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+                {
+                    policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireClaim(ClaimTypes.Name);
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,9 +57,14 @@ namespace Orders
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<OrdersService>();
+
+                endpoints.MapGet("/generateJwtToken", context => context.Response.WriteAsync(JwtHelper.GenerateJwtToken(context.Request.Query["name"])));
 
                 endpoints.MapGet("/", async context =>
                 {

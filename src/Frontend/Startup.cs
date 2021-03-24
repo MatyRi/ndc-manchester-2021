@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Frontend.Auth;
+using Grpc.Core;
 using Ingredients.Protos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Orders.Protos;
 
 namespace Frontend
@@ -32,10 +35,26 @@ namespace Frontend
                 options.Address = config.GetServiceUri("Ingredients", "https");
             });
 
+            services.AddHttpClient<AuthHelper>().ConfigureHttpClient((provider, client) =>
+            {
+                var config = provider.GetRequiredService<IConfiguration>();
+                client.BaseAddress = config.GetServiceUri("Orders", "https") ?? new Uri("https://localhost:5005"); // TODO Test with Configuration
+                client.DefaultRequestVersion = new Version(2, 0);
+            });
+
             services.AddGrpcClient<OrdersService.OrdersServiceClient>((provider, options) =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
-                options.Address = config.GetServiceUri("Orders", "https");
+                options.Address = config.GetServiceUri("Orders", "https") ?? new Uri("https://localhost:5005");
+            }).ConfigureChannel((provider, channel) => {
+                var authHelper = provider.GetRequiredService<AuthHelper>();
+                var credentials = CallCredentials.FromInterceptor(async (context, metadata) =>
+                {
+                    var token = await authHelper.GetTokenAsync();
+                    metadata.Add("Authorization", $"Bearer {token}");
+                });
+
+                channel.Credentials = ChannelCredentials.Create(new SslCredentials(), credentials);
             });
 
             services.AddControllersWithViews();

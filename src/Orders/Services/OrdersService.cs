@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Ingredients.Protos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Orders.Protos;
 using Orders.PubSub;
@@ -26,8 +28,14 @@ namespace Orders.Services
             _orderMessages = orderMessages;
         }
 
+        [Authorize]
         public override async Task<PlaceOrderResponse> PlaceOrder(PlaceOrderRequest request, ServerCallContext context)
         {
+            var httpContext = context.GetHttpContext();
+            var user = httpContext.User;
+
+            _logger.LogInformation("PlaceOrder request from {User}", user.FindFirst(ClaimTypes.Name));
+
             var now = DateTimeOffset.UtcNow;
 
             await _orderPublisher.PublishOrder(request.CrustId, request.ToppingIds, now);
