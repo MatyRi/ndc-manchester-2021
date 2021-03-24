@@ -9,7 +9,7 @@ COPY ./src/Orders/Orders.csproj ./src/Orders/
 COPY ./src/Orders.PubSub/Orders.PubSub.csproj ./src/Orders.PubSub/
 COPY ./src/Pizza.Data/Pizza.Data.csproj ./src/Pizza.Data/
 COPY ./src/ShopConsole/ShopConsole.csproj ./src/ShopConsole/
-COPY ./test/Ingredients.Tests/Ingredients.Tests.csproj /test/Ingredients.Tests/
+COPY ./test/Ingredients.Tests/Ingredients.Tests.csproj ./test/Ingredients.Tests/
 #COPY ./test/Orders.Tests/Orders.Tests.csproj ./test/Orders.Tests/
 COPY ./test/TestHelpers/TestHelpers.csproj ./test/TestHelpers/
 COPY ./tools/CreateData/CreateData.csproj ./tools/CreateData/
